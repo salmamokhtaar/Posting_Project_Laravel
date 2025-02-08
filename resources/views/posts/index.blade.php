@@ -9,13 +9,15 @@
 
         @if($posts->count() > 0)
             <div class="table-responsive">
-                <table class="table table-bordered table-striped">
+                <table class="table table-bordered table-striped text-center">
                     <thead class="table-dark">
                         <tr>
                             <th>No</th>
                             <th>Title</th>
                             <th>Content</th>
+                            <th>Image</th> <!-- ✅ Improved Image Column -->
                             <th>Actions</th>
+                            <th>View Details</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -23,14 +25,25 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $post->title }}</td>
-                                <td>{{ Str::limit($post->content, 50, '...') }}</td> <!-- Shows first 50 characters -->
+                                <td>{{ Str::limit($post->content, 50, '...') }}</td> <!-- Shorten content -->
+
+                                <!-- ✅ Improved Image Display -->
                                 <td>
-                                    <!-- Edit Button -->
+                                    @if($post->image)
+                                        <img src="{{ asset('storage/' . $post->image) }}" 
+                                             alt="Post Image" 
+                                             class="img-thumbnail rounded" 
+                                             style="width: 120px; height: 90px; object-fit: cover;">
+                                    @else
+                                        <span class="text-muted">No Image</span>
+                                    @endif
+                                </td>
+
+                                <!-- ✅ Actions (Edit & Delete) -->
+                                <td>
                                     <a href="{{ route('posts.edit', $post->id) }}" class="btn btn-warning btn-sm">
                                         <i class="fas fa-edit"></i> Edit
                                     </a>
-
-                                    <!-- Delete Form -->
                                     <form action="{{ route('posts.destroy', $post->id) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
@@ -38,6 +51,13 @@
                                             <i class="fas fa-trash"></i> Delete
                                         </button>
                                     </form>
+                                </td>
+
+                                <!-- ✅ View Details Button -->
+                                <td>
+                                    <a href="{{ route('posts.show', $post->id) }}" class="btn btn-info btn-sm">
+                                        <i class="fas fa-eye"></i> View
+                                    </a>
                                 </td>
                             </tr>
                         @endforeach

@@ -9,7 +9,7 @@
                         <h3>Create a New Post</h3>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('posts.store') }}" method="POST">
+                        <form action="{{ route('posts.store') }}" method="POST" enctype="multipart/form-data"> <!-- ✅ Added enctype -->
                             @csrf
                             <div class="mb-3">
                                 <label for="title" class="form-label">Title</label>
@@ -18,6 +18,10 @@
                             <div class="mb-3">
                                 <label for="content" class="form-label">Content</label>
                                 <textarea name="content" class="form-control" rows="5" placeholder="Write your post content here..." required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="image" class="form-label">Upload Image</label>
+                                <input type="file" name="image" class="form-control">
                             </div>
                             <div class="d-flex justify-content-between">
                                 <a href="{{ route('posts.index') }}" class="btn btn-secondary">
