@@ -9,6 +9,5 @@ class Post extends Model
 {
     use HasFactory;
 
-    // Allow mass assignment for these fields
     protected $fillable = ['title', 'content', 'image'];
 }

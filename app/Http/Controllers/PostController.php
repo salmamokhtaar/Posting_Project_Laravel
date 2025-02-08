@@ -30,20 +30,20 @@ class PostController extends Controller
             'content' => 'required',
             'image' => 'nullable|image|mimes:jpg,png,jpeg,gif|max:2048',
         ]);
-    
+
         // Handle image upload
         $imagePath = null;
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('posts', 'public');
         }
-    
+
         // Create post
         Post::create([
             'title' => $request->title,
             'content' => $request->content,
             'image' => $imagePath,
         ]);
-    
+
         return redirect()->route('posts.index')->with('success', 'Post created successfully!');
     }
 
@@ -53,7 +53,7 @@ class PostController extends Controller
         return view('posts.edit', compact('post'));
     }
 
-    // ✅ Updated: Update post with image handling
+    // Update post with image handling
     public function update(Request $request, Post $post)
     {
         $request->validate([
@@ -61,31 +61,27 @@ class PostController extends Controller
             'content' => 'required',
             'image' => 'nullable|image|mimes:jpg,png,jpeg,gif|max:2048',
         ]);
-    
-        // Initialize image variable
-        $imagePath = $post->image;
-    
+
         // Handle image upload only if a new image is provided
         if ($request->hasFile('image')) {
             // Delete the old image if it exists
             if ($post->image) {
                 Storage::delete('public/' . $post->image);
             }
-    
+
             // Store the new image
-            $imagePath = $request->file('image')->store('posts', 'public');
+            $post->image = $request->file('image')->store('posts', 'public');
         }
-    
+
         // Update post details
         $post->update([
             'title' => $request->title,
             'content' => $request->content,
-            'image' => $imagePath, // Keep the old image if no new one is uploaded
+            'image' => $post->image, // Keep the old image if no new one is uploaded
         ]);
-    
+
         return redirect()->route('posts.index')->with('success', 'Post updated successfully.');
     }
-    
 
     // Delete post
     public function destroy(Post $post)
